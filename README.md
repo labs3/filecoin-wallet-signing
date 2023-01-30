@@ -2,11 +2,11 @@
 
 ## Provides the Filecoin wallet  tool
 
-The following operations require access to the lotus-RPC endpoint(default:https://api.node.glif.io/rpc/v1). you can configure environment variables to connect your lotus-RPC endpoint
+The following operations require access to the lotus-RPC endpoint ( default:https://api.node.glif.io/rpc/v1 ). you can configure environment variables to connect your endpoint
 
 ```bash
-export LOTUS_API : http://127.0.0.1:1234/rpc/v1
-export LOTUS_API_TOKEN : eyJhbGcI.......BSiGNLrVVbdlDs
+export LOTUS_API=http://127.0.0.1:1234/rpc/v1
+export LOTUS_API_TOKEN=eyJhbGcI.......BSiGNLrVVbdlDs
 ```
 
 ### Checklist
