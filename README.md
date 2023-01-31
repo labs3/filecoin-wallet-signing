@@ -12,7 +12,8 @@ export LOTUS_API_TOKEN=eyJhbGcI.......BSiGNLrVVbdlDs
 ### Checklist
 - [x] send   
 - [x] withdraw
-- [ ] change owner
+- [x] change owner
+- [ ] change worker
 - multisig
   - [x] propose
   - [x] propose withdraw

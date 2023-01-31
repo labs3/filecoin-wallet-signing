@@ -39,6 +39,7 @@ func init() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
 	rootCmd.AddCommand(withdrawCmd)
+	rootCmd.AddCommand(changeOwnerCmd)
 	rootCmd.AddCommand(msig.Cmd)
 	rootCmd.AddCommand(sendCmd)
 }
