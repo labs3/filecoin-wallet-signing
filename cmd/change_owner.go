@@ -60,7 +60,7 @@ func changeOwner(cmd *cobra.Command, args []string) {
 
 	params, err := actors.SerializeParams(&newAddr)
 	if err != nil {
-		fmt.Println("Serialize miner.WithdrawBalanceParams failed: ", err)
+		fmt.Println("Serialize newAddr failed: ", err)
 		return
 	}
 

@@ -118,6 +118,16 @@ var inspectCmd = &cobra.Command{
 				p = string(b)
 				msg = fmt.Sprintf("withdraw from miner  %v FIL", pkg.ToFloat64(mwdp.AmountRequested))
 			}
+			if out.Method == 23 {
+				addr := address.Address{}
+				err = addr.UnmarshalCBOR(bytes.NewReader(out.Params))
+				if err != nil {
+					fmt.Println("Parameter parsing failed:", err.Error())
+					return nil
+				}
+
+				msg = fmt.Sprintf("change miner %v owner is %v ", out.To.String(), addr.String())
+			}
 			fmt.Printf("pending id: %v , to : %v , method: %v , amount: %v FIL, Params: %s, approved %v, ps: %s \n",
 				txid, out.To, out.Method, pkg.ToFloat64(out.Value), p, out.Approved, msg)
 			return nil

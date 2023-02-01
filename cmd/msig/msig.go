@@ -15,5 +15,6 @@ func init() {
 	Cmd.AddCommand(approveCmd)
 	Cmd.AddCommand(inspectCmd)
 	proposeCmd.AddCommand(proposeWhithdrawCmd)
+	proposeCmd.AddCommand(proposeChangeOwnerCmd)
 	Cmd.AddCommand(proposeCmd)
 }
