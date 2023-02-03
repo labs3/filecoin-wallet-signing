@@ -1,0 +1,71 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+        - target: filwallet-sign_darwin_amd64
+          os: macos-latest
+        - target: filwallet-sign_win_amd64.exe
+          os: windows-latest
+        - target: filwallet-sign_linux_amd64
+          os: ubuntu-latest
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v3
+      with:
+        check-latest: true
+        go-version: '1.19'
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Build release binary
+      run: |
+        go get .
+        go build -o ${{ matrix.target }} main.go
+
+    - name: Build Archive
+      shell: bash
+      id: package
+      env:
+        target: ${{ matrix.target }}
+        version:  ${{ steps.check-tag.outputs.version }}
+      run: |
+        set -euxo pipefail
+        bin=${GITHUB_REPOSITORY##*/}
+        src=`pwd`
+        dist=$src/dist
+        mkdir $dist
+        cp $target $dist
+        cd $dist
+        ls
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+            archive=$dist/$target.zip
+            7z a $archive *
+            echo "::set-output name=archive::`pwd -W`/$target.zip"
+        else
+            archive=$dist/$target.tar.gz
+            tar czf $archive *
+            echo "::set-output name=archive::$archive"
+        fi
+
+    - name: Publish Archive
+      uses: softprops/action-gh-release@v0.1.15
+      if: ${{ startsWith(github.ref, 'refs/tags/') }}
+      with:
+        draft: false
+        name: Upload release assets
+        files: ${{ steps.package.outputs.archive }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
