@@ -42,6 +42,8 @@ func init() {
 	rootCmd.AddCommand(changeOwnerCmd)
 	rootCmd.AddCommand(msig.Cmd)
 	rootCmd.AddCommand(sendCmd)
+	rootCmd.AddCommand(signCmd)
+	rootCmd.AddCommand(verifyCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
