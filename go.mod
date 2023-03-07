@@ -15,7 +15,7 @@ require (
 	github.com/filecoin-project/specs-actors/v8 v8.0.1
 	github.com/google/uuid v1.3.0
 	github.com/ipfs/go-block-format v0.0.3
-	github.com/ipfs/go-cid v0.2.0
+	github.com/ipfs/go-cid v0.3.2
 	github.com/ipfs/go-ipfs-blockstore v1.2.0
 	github.com/ipfs/go-ipld-cbor v0.0.6
 	github.com/ipfs/go-log/v2 v2.5.1
@@ -71,7 +71,7 @@ require (
 	github.com/ipfs/go-merkledag v0.8.1 // indirect
 	github.com/ipfs/go-metrics-interface v0.0.1 // indirect
 	github.com/ipld/go-codec-dagpb v1.5.0 // indirect
-	github.com/ipld/go-ipld-prime v0.18.0 // indirect
+	github.com/ipld/go-ipld-prime v0.19.0 // indirect
 	github.com/ipsn/go-secp256k1 v0.0.0-20180726113642-9d62b9f0bc52 // indirect
 	github.com/jbenet/goprocess v0.1.4 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
@@ -91,7 +91,7 @@ require (
 	github.com/multiformats/go-base36 v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.6.0 // indirect
 	github.com/multiformats/go-multibase v0.1.1 // indirect
-	github.com/multiformats/go-multicodec v0.5.0 // indirect
+	github.com/multiformats/go-multicodec v0.6.0 // indirect
 	github.com/multiformats/go-multihash v0.2.1 // indirect
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
