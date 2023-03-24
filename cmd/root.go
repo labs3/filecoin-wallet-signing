@@ -11,6 +11,10 @@ import (
 )
 
 var cfgFile string
+var overwrite bool
+var minerActor string
+var existingBeneficiary bool
+var newBeneficiary bool
 
 // rootCmd represents the base command when called without any subcommands generate
 var rootCmd = &cobra.Command{
@@ -40,10 +44,20 @@ func init() {
 
 	rootCmd.AddCommand(withdrawCmd)
 	rootCmd.AddCommand(changeOwnerCmd)
-	rootCmd.AddCommand(msig.Cmd)
 	rootCmd.AddCommand(sendCmd)
 	rootCmd.AddCommand(signCmd)
 	rootCmd.AddCommand(verifyCmd)
+
+	rootCmd.AddCommand(changeBeneficiaryCmd)
+	changeBeneficiaryCmd.Flags().BoolVar(&overwrite, "overwrite-pending-change", false, "Overwrite the current beneficiary change proposal")
+	changeBeneficiaryCmd.Flags().StringVar(&minerActor, "actor", "", "specify the address of miner actor")
+
+	rootCmd.AddCommand(confirmChangeBeneficiaryCmd)
+	confirmChangeBeneficiaryCmd.Flags().BoolVar(&existingBeneficiary, "existing-beneficiary", false, "send confirmation from the existing beneficiary address")
+	confirmChangeBeneficiaryCmd.Flags().BoolVar(&newBeneficiary, "new-beneficiary", false, "send confirmation from the new beneficiary address")
+
+	rootCmd.AddCommand(msig.Cmd)
+
 }
 
 // initConfig reads in config file and ENV variables if set.

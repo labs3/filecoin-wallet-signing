@@ -13,6 +13,8 @@ export LOTUS_API_TOKEN=eyJhbGcI.......BSiGNLrVVbdlDs
 - [x] send   
 - [x] withdraw
 - [x] change owner
+- [x] sign and verify any string message
+- [x] change the miner's beneficiary
 - [ ] change worker
 - multisig
   - [x] propose
@@ -25,7 +27,7 @@ export LOTUS_API_TOKEN=eyJhbGcI.......BSiGNLrVVbdlDs
 usage
 
 ```bash
-$ go run main.go   
+$ ./filwallet-sign --help
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Filecoin wallet tool
@@ -37,8 +39,11 @@ Available Commands:
   help        Help about any command
   msig        multisig address tool
   send        send
+  sign        sign any string message
+  verify      verify the signature of any string message
   withdraw    withdraw from miner
-
+  change-beneficiary    propose to change the miner's beneficiary
+  confirm-change-beneficiary    confirm change the miner's beneficiary
 ```
 
 ### send to address 
@@ -46,7 +51,7 @@ Available Commands:
 + sender is address of private key
 
 ```bash
-$ go run main.go send t142e....4zfa 1                                             
+$ ./filwallet-sign send t142e....4zfa 1                                             
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -60,7 +65,7 @@ message CID: bafy2bzacec55......a3rjg6dtyu
 + address of private key  must be miner's owner
 
 ```bash
-$ go run main.go withdraw t01234 6.6                             
+$ ./filwallet-sign withdraw t01234 6.6                             
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -71,8 +76,8 @@ message CID: bafy2bzacebe......a3rjg6dtyu
 
 + change miner's owner
 
-```bash js
-$ go run main.go  change-owner  t03..3 t01234 t03..4 
+```bash
+$ ./filwallet-sign change-owner  t03..3 t01234 t03..4 
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -87,7 +92,7 @@ message CID: bafy2bzaceah.....i4d5qkvs
 usage 
 
 ```bash
-$ go run main.go msig               
+$ ./filwallet-sign msig               
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 multisig address tool
@@ -107,7 +112,7 @@ Flags:
 #### propose
 
 ```bash
- go run main.go msig propose t03..3 t3v.....marqq 1.2   
+ ./filwallet-signmsig propose t03..3 t3v.....marqq 1.2   
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -119,7 +124,7 @@ send from t3v.....marqq to t03..3 amount 1.2
 #### inspect
 
 ```bash
-$ go run main.go msig inspect t03..3
+$ ./filwallet-sign msig inspect t03..3
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Address: t03..3, ID: t03..3
@@ -135,7 +140,7 @@ pending id: 6 , to : t3v.....marqq , method: 0 , amount: 1.2 FIL, Params: , appr
 #### approve
 
 ```bash
-$ go run main.go msig approve t03..3 6
+$ ./filwallet-sign msig approve t03..3 6
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -147,8 +152,8 @@ message CID: bafy2bzaceah.....i4d5qkvs
 
 + withdraw from miner 
 
-```bash js
-$ go run main.go msig propose withdraw t03..3 t01234 99999 
+```bash
+$ ./filwallet-sign msig propose withdraw t03..3 t01234 99999 
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
@@ -159,8 +164,8 @@ withdraw 99999 FIL from t01234
 
 + change miner's owner
 
-```bash js
-$ go run main.go msig propose change-owner  t03..3 t01234 t03..4 
+```bash
+$ ./filwallet-sign msig propose change-owner  t03..3 t01234 t03..4 
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d

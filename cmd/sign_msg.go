@@ -11,8 +11,8 @@ import (
 
 // signCmd represents the sign message command
 var signCmd = &cobra.Command{
-	Use:   "sign 'msg'",
-	Short: "sign",
+	Use:   "sign <message>",
+	Short: "sign any string message",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := sign(cmd, args)
 		if err != nil {

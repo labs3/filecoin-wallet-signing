@@ -11,8 +11,8 @@ import (
 
 // verifyCmd represents the verify signature command
 var verifyCmd = &cobra.Command{
-	Use:   "verify 'address' 'msg' 'signature'",
-	Short: "verify",
+	Use:   "verify <address> <message> <signature>",
+	Short: "verify the signature of any string message",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := verify(cmd, args)
 		if err != nil {
