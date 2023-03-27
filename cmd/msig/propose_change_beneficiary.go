@@ -1,15 +1,15 @@
-package cmd
+package msig
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-state-types/abi"
-	"github.com/filecoin-project/go-state-types/builtin"
+	builtintypes "github.com/filecoin-project/go-state-types/builtin"
 	"github.com/filecoin-project/go-state-types/builtin/v9/miner"
+	"github.com/filecoin-project/specs-actors/v8/actors/builtin/multisig"
 	"github.com/labs3/filecoin-wallet-signing/chain/actors"
 	"github.com/labs3/filecoin-wallet-signing/chain/types"
 	"github.com/labs3/filecoin-wallet-signing/internal"
@@ -17,20 +17,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// changeBeneficiaryCmd represents the changing of beneficiary
-var changeBeneficiaryCmd = &cobra.Command{
+// proposeChangeBeneficiaryCmd represents the changing of beneficiary
+var proposeChangeBeneficiaryCmd = &cobra.Command{
 	Use:   "change-beneficiary <beneficiaryAddress> <quota> <expiration>",
 	Short: "change the miner's beneficiary",
 	Run: func(cmd *cobra.Command, args []string) {
-		err := changeBeneficiary(cmd, args, overwrite, minerActor)
+		err := changeBeneficiary(cmd, args, overwrite, multisigStr, minerStr)
 		if err != nil {
 			fmt.Println(err)
 		}
 	},
 }
 
-
-func changeBeneficiary(ccmd *cobra.Command, args []string, overwrite bool, minerActor string) error {
+func changeBeneficiary(ccmd *cobra.Command, args []string, overwrite bool, multisigStr, minerStr string) error {
 	if len(args) != 3 {
 		_ = ccmd.Help()
 		return errors.New("not enough parameters")
@@ -52,28 +51,37 @@ func changeBeneficiary(ccmd *cobra.Command, args []string, overwrite bool, miner
 		return fmt.Errorf("parsing quota: %w", err)
 	}
 
-	expiration, err := strconv.ParseInt(args[2], 10, 64)
+	expiration, err := types.BigFromString(args[2])
 	if err != nil {
 		return fmt.Errorf("parsing expiration: %w", err)
 	}
 
-	mActor, err := address.NewFromString(minerActor)
+	multisigAddr, err := address.NewFromString(multisigStr)
 	if err != nil {
-		return errors.New("must specify miner actor address")
+		return fmt.Errorf("parsing multisig address: %w", err)
 	}
 
-	key, err := pkg.ReadPrivteKey() // owner propose
+	if multisigAddr.Protocol() != address.Actor && multisigAddr.Protocol() != address.ID {
+		return errors.New("please input a correct multisig address, Actor/ID address")
+	}
+
+	minerAddr, err := address.NewFromString(minerStr)
+	if err != nil {
+		return fmt.Errorf("parsing miner address: %w", err)
+	}
+
+	if minerAddr.Protocol() != address.Actor && minerAddr.Protocol() != address.ID {
+		return errors.New("please input a correct miner address, Actor/ID address")
+	}
+
+	mi, err := internal.Lapi.StateMinerInfo(ctx, minerAddr, types.EmptyTSK)
+	if err != nil {
+		return err
+	}
+
+	sender, err := pkg.ReadPrivteKey() // sender, the one of signers
 	if err != nil {
 		return fmt.Errorf("decode private key failed: %w", err)
-	}
-
-	mi, err := internal.Lapi.StateMinerInfo(ctx, mActor, types.EmptyTSK)
-	if err != nil {
-		return fmt.Errorf("getting miner info: %w", err)
-	}
-
-	if mi.Beneficiary == mi.Owner && newBeneficiary == mi.Owner {
-		return fmt.Errorf("beneficiary %s already set to owner address", mi.Beneficiary)
 	}
 
 	if mi.PendingBeneficiaryTerm != nil {
@@ -90,7 +98,7 @@ func changeBeneficiary(ccmd *cobra.Command, args []string, overwrite bool, miner
 	params := &miner.ChangeBeneficiaryParams{
 		NewBeneficiary: newBeneficiary,
 		NewQuota:       abi.TokenAmount(quota),
-		NewExpiration:  abi.ChainEpoch(expiration),
+		NewExpiration:  abi.ChainEpoch(expiration.Int64()),
 	}
 
 	sp, err := actors.SerializeParams(params)
@@ -98,15 +106,25 @@ func changeBeneficiary(ccmd *cobra.Command, args []string, overwrite bool, miner
 		return fmt.Errorf("serializing params: %w", err)
 	}
 
-	msg := types.Message{
-		From:   key.Address,
-		To:     mActor,
+	enc, actErr := actors.SerializeParams(&multisig.ProposeParams{
+		To:     minerAddr,
 		Value:  abi.NewTokenAmount(0),
-		Method: builtin.MethodsMiner.ChangeBeneficiary,
+		Method: builtintypes.MethodsMiner.ChangeBeneficiary,
 		Params: sp,
+	})
+	if actErr != nil {
+		return fmt.Errorf("failed to serialize parameters: %w", actErr)
 	}
 
-	err = internal.PushSignedMsg(&msg, key.PrivateKey)
+	msg := types.Message{
+		From:   sender.Address,
+		To:     multisigAddr,
+		Value:  abi.NewTokenAmount(0),
+		Method: builtintypes.MethodsMultisig.Propose,
+		Params: enc,
+	}
+
+	err = internal.PushSignedMsg(&msg, sender.PrivateKey)
 	if err != nil {
 		fmt.Println(err)
 	}
