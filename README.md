@@ -22,6 +22,7 @@ export LOTUS_API_TOKEN=eyJhbGcI.......BSiGNLrVVbdlDs
   - [x] inspect
   - [x] approve
   - [x] change owner
+  - [x] change the miner's beneficiary
   - [ ] change worker
 
 usage
