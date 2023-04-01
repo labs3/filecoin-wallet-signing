@@ -19,7 +19,7 @@ var newBeneficiary bool
 // rootCmd represents the base command when called without any subcommands generate
 var rootCmd = &cobra.Command{
 	Use:   "wallet command [options]",
-	Short: "Filecoin wallet tool",
+	Short: "Filecoin wallet sign tools",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

@@ -10,7 +10,7 @@ var multisigStr, minerStr string
 // Cmd represents the msig command
 var Cmd = &cobra.Command{
 	Use:   "msig",
-	Short: "multisig address tool",
+	Short: "multisig address tools",
 }
 
 func init() {
