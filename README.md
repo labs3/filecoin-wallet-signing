@@ -1,6 +1,4 @@
-# github.com/labs3/filecoin-wallet-signing
-
-## Provides the Filecoin wallet  tool
+## Provides the filecoin wallet sign tool
 
 The following operations require access to the lotus-RPC endpoint ( default:https://api.node.glif.io/rpc/v1 ). you can configure environment variables to connect your endpoint
 
@@ -110,16 +108,15 @@ Flags:
 
 ```
 
-#### propose
+#### approve
 
 ```bash
- ./filwallet-signmsig propose t03..3 t3v.....marqq 1.2   
+$ ./filwallet-sign msig approve t03..3 6
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
 ...
 message CID: bafy2bzaceah.....i4d5qkvs
-send from t3v.....marqq to t03..3 amount 1.2 
 ```
 
 #### inspect
@@ -138,18 +135,19 @@ pending id: 6 , to : t3v.....marqq , method: 0 , amount: 1.2 FIL, Params: , appr
 
 ```
 
-#### approve
+#### propose
+
++ transfer from multisign address 
 
 ```bash
-$ ./filwallet-sign msig approve t03..3 6
+ ./filwallet-signmsig propose t03..3 t3v.....marqq 1.2   
 LOTUS_API :  http://127.0.0.1:1234/rpc/v1
 LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
 Please enter the private key: 7b225.......673d227d
 ...
 message CID: bafy2bzaceah.....i4d5qkvs
+send from t3v.....marqq to t03..3 amount 1.2 
 ```
-
-#### withdraw
 
 + withdraw from miner 
 
@@ -173,4 +171,15 @@ Please enter the private key: 7b225.......673d227d
 ...
 message CID: bafy2bzaceah.....i4d5qkvs
 change miner t01020  owner is t03..4
+```
+
++ change miner's beneficiary
+
+```bash
+$ ./filwallet-sign msig propose change-beneficiary beneficiaryAddress quota expiration --msig-addr msigAddress --miner-addr minerAddress
+LOTUS_API :  http://127.0.0.1:1234/rpc/v1
+LOTUS_API_TOKEN :  Bearer eyJhbGcI.......BSiGNLrVVbdlDs
+Please enter the private key: 7b225.......673d227d
+...
+message CID: bafy2bzaceah.....i4d5qkvs
 ```
