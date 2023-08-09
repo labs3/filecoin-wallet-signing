@@ -25,7 +25,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1
-	github.com/supranational/blst v0.3.10
+	github.com/supranational/blst v0.3.11
 	github.com/whyrusleeping/cbor-gen v0.0.0-20220514204315-f29c37e9c44c
 	github.com/xorcare/golden v0.6.0
 	go.uber.org/zap v1.22.0
